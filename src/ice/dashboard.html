@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ICE Evaluation Board</title>
+<style>
+:root {
+  --bg: #0a0e0b;
+  --panel: #111812;
+  --panel-2: #172019;
+  --line: #263226;
+  --text: #dbe4d6;
+  --muted: #84947f;
+  --green: #8cc152;
+  --amber: #e3b341;
+  --red: #e5594f;
+  --blue: #5aa9d6;
+  --mono: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, "Liberation Mono", monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.45; }
+body { background-image: linear-gradient(rgba(140,193,82,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(140,193,82,.035) 1px, transparent 1px); background-size: 32px 32px; min-height: 100vh; }
+.mono { font-family: var(--mono); }
+.banner { background: var(--panel-2); border-bottom: 1px solid var(--line); text-align: center; font-family: var(--mono); font-size: 11px; letter-spacing: .14em; color: var(--amber); padding: 6px 16px; text-transform: uppercase; }
+header { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid var(--line); }
+h1 { margin: 0; font-family: var(--mono); font-size: 18px; letter-spacing: .12em; text-transform: uppercase; }
+h1 span { color: var(--green); }
+.sub { color: var(--muted); font-size: 12px; font-family: var(--mono); }
+select { background: var(--panel); color: var(--text); border: 1px solid var(--line); padding: 8px 10px; font-family: var(--mono); font-size: 12px; max-width: 100%; border-radius: 3px; }
+select:focus-visible, button:focus-visible, .cell:focus-visible, tr:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
+main { padding: 20px 24px 60px; max-width: 1400px; margin: 0 auto; display: grid; gap: 16px; }
+.row { display: grid; gap: 16px; }
+.tiles { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.two { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 3px; padding: 14px 16px; min-width: 0; }
+.panel h2 { margin: 0 0 12px; font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.tile .label { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.tile .big { font-family: var(--mono); font-size: 40px; font-weight: 600; line-height: 1.1; margin-top: 6px; }
+.tile .frac { color: var(--muted); font-family: var(--mono); font-size: 12px; margin-top: 2px; }
+.tile .delta { font-family: var(--mono); font-size: 12px; margin-top: 8px; min-height: 18px; }
+.meter { height: 6px; background: var(--panel-2); margin-top: 10px; border-radius: 1px; overflow: hidden; }
+.meter > i { display: block; height: 100%; }
+.good { color: var(--green); } .warn { color: var(--amber); } .bad { color: var(--red); } .none { color: var(--muted); }
+.bg-good { background: var(--green); } .bg-warn { background: var(--amber); } .bg-bad { background: var(--red); } .bg-none { background: var(--muted); }
+.bars { display: grid; gap: 9px; }
+.bar { display: grid; grid-template-columns: minmax(110px, 190px) 1fr 84px; gap: 10px; align-items: center; font-size: 12px; }
+.bar .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar .track { height: 12px; background: var(--panel-2); border-radius: 1px; overflow: hidden; }
+.bar .track > i { display: block; height: 100%; }
+.bar .val { text-align: right; font-family: var(--mono); color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+.legend b { display: inline-block; width: 12px; height: 12px; vertical-align: -2px; margin-right: 5px; border-radius: 2px; }
+.group { margin-bottom: 14px; }
+.group > .gname { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .08em; }
+.grid { display: flex; flex-wrap: wrap; gap: 4px; }
+.cell { width: 34px; height: 30px; border: 1px solid; border-radius: 2px; font-family: var(--mono); font-size: 9.5px; display: grid; place-items: center; cursor: pointer; background: transparent; padding: 0; color: inherit; position: relative; }
+.cell.pass { border-color: #4f7a2b; background: rgba(140,193,82,.16); color: var(--green); }
+.cell.fail { border-color: #8f342e; background: rgba(229,89,79,.2); color: var(--red); }
+.cell.error { border-color: #8a6d1d; background: repeating-linear-gradient(45deg, rgba(227,179,65,.18) 0 4px, transparent 4px 8px); color: var(--amber); }
+.cell.auth::after { content: ""; position: absolute; top: 2px; right: 2px; width: 5px; height: 5px; background: var(--blue); border-radius: 50%; }
+.cell.sel { box-shadow: 0 0 0 2px var(--blue); }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+th { text-align: left; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 6px 8px; border-bottom: 1px solid var(--line); font-weight: 600; }
+td { padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr.click { cursor: pointer; }
+tr.click:hover td, tr.sel td { background: var(--panel-2); }
+.chip { display: inline-block; font-family: var(--mono); font-size: 11px; padding: 1px 7px; border-radius: 2px; border: 1px solid; }
+.chip.pass { color: var(--green); border-color: #4f7a2b; } .chip.fail { color: var(--red); border-color: #8f342e; } .chip.error { color: var(--amber); border-color: #8a6d1d; }
+.detail { white-space: pre-wrap; background: var(--bg); border: 1px solid var(--line); padding: 10px 12px; font-family: var(--mono); font-size: 12px; max-height: 260px; overflow: auto; border-radius: 2px; word-break: break-word; }
+.dgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin-top: 12px; }
+.dgrid h3 { margin: 0 0 6px; font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+.turn { margin-bottom: 8px; }
+.turn .who { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; }
+.turn.tester .who { color: var(--blue); } .turn.target .who { color: var(--green); }
+ul.caveats { margin: 0; padding-left: 18px; color: var(--muted); font-size: 12.5px; }
+ul.caveats li { margin-bottom: 4px; }
+.empty { color: var(--muted); padding: 40px 0; text-align: center; font-family: var(--mono); }
+.hint { color: var(--muted); font-size: 12px; margin-top: 10px; }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.filters button { background: var(--panel-2); color: var(--muted); border: 1px solid var(--line); font-family: var(--mono); font-size: 11px; padding: 4px 10px; cursor: pointer; border-radius: 2px; }
+.filters button[aria-pressed="true"] { color: var(--text); border-color: var(--green); }
+footer { color: var(--muted); font-family: var(--mono); font-size: 11px; text-align: center; padding: 0 16px 30px; }
+@media (max-width: 560px) { header, main { padding-left: 14px; padding-right: 14px; } .bar { grid-template-columns: 90px 1fr 70px; } .tile .big { font-size: 32px; } }
+@media print { body { background: #fff; color: #000; } .panel { border-color: #999; } }
+</style>
+</head>
+<body>
+<div class="banner">Training evaluation data &middot; fictional scenarios &middot; a run is evidence for a reviewer, not a certification</div>
+<header>
+  <div>
+    <h1><span>ICE</span> // Evaluation board</h1>
+    <div class="sub" id="meta"></div>
+  </div>
+  <label class="sub">Run
+    <select id="runSelect" aria-label="Choose a run"></select>
+  </label>
+</header>
+<main id="app"></main>
+<footer>Agents propose, humans sign. This board reads run reports from disk and makes no network requests.</footer>
+
+<script>
+const DATA = /*__ICE_DATA__*/null;
+
+(function () {
+  "use strict";
+  const app = document.getElementById("app");
+  const select = document.getElementById("runSelect");
+  const meta = document.getElementById("meta");
+  const runs = (DATA && DATA.runs) || [];
+  const state = { runId: runs.length ? runs[0].run_id : null, pick: null, filter: "all" };
+
+  // Build DOM with textContent only. Agent answers are untrusted text.
+  function h(tag, attrs, ...kids) {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs || {})) {
+      if (v === null || v === undefined || v === false) continue;
+      if (k === "class") el.className = v;
+      else if (k === "style") el.style.cssText = v;
+      else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v === true ? "" : v);
+    }
+    for (const kid of kids.flat()) {
+      if (kid === null || kid === undefined || kid === false) continue;
+      el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    }
+    return el;
+  }
+
+  const add = (parent, ...kids) => parent.append(...kids.filter((k) => k !== null && k !== undefined && k !== false));
+  const pct = (a, b) => (b ? Math.round((a / b) * 100) : null);
+  // Display bands only. They are not a standard and not a pass mark.
+  const band = (p) => (p === null ? "none" : p >= 80 ? "good" : p >= 50 ? "warn" : "bad");
+  const fmt = (p) => (p === null ? "n/a" : p + "%");
+  const current = () => runs.find((r) => r.run_id === state.runId) || null;
+
+  function previousFor(run) {
+    const later = runs.filter((r) => r.target === run.target && r.started_at < run.started_at);
+    return later.length ? later[0] : null;
+  }
+
+  function tile(label, passed, total, prev, prevPassed, prevTotal) {
+    const p = pct(passed, total);
+    const pp = prev ? pct(prevPassed, prevTotal) : null;
+    let delta = h("span", { class: "none" }, "no earlier run for this target");
+    if (p !== null && pp !== null) {
+      const d = p - pp;
+      delta = h("span", { class: d > 0 ? "good" : d < 0 ? "bad" : "none" },
+        (d > 0 ? "▲ +" : d < 0 ? "▼ " : "▬ ") + d + " pts vs earlier run");
+    }
+    return h("div", { class: "panel tile" },
+      h("div", { class: "label" }, label),
+      h("div", { class: "big " + band(p) }, fmt(p)),
+      h("div", { class: "frac" }, total ? passed + " of " + total : "not run"),
+      h("div", { class: "meter" }, h("i", { class: "bg-" + band(p), style: "width:" + (p || 0) + "%" })),
+      h("div", { class: "delta" }, delta));
+  }
+
+  function barRow(name, passed, total) {
+    const p = pct(passed, total);
+    return h("div", { class: "bar" },
+      h("div", { class: "name", title: name }, name),
+      h("div", { class: "track" }, h("i", { class: "bg-" + band(p), style: "width:" + (p || 0) + "%" })),
+      h("div", { class: "val" }, fmt(p) + " " + passed + "/" + total));
+  }
+
+  function tally(items, keyFn, okFn) {
+    const map = new Map();
+    for (const it of items) {
+      if (it.verdict === "error") continue;
+      const k = keyFn(it);
+      const cur = map.get(k) || { passed: 0, total: 0 };
+      cur.total += 1;
+      if (okFn(it)) cur.passed += 1;
+      map.set(k, cur);
+    }
+    return [...map.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  }
+
+  function panelBars(title, rows, hint) {
+    return h("div", { class: "panel" }, h("h2", {}, title),
+      rows.length ? h("div", { class: "bars" }, rows.map(([n, v]) => barRow(n, v.passed, v.total)))
+                  : h("div", { class: "none" }, "not run"),
+      hint ? h("div", { class: "hint" }, hint) : null);
+  }
+
+  function cell(label, verdict, auth, id, kind, title) {
+    const sym = verdict === "pass" ? "✓" : verdict === "fail" ? "✗" : "!";
+    return h("button", {
+      class: "cell " + verdict + (auth ? " auth" : "") + (state.pick && state.pick.id === id && state.pick.kind === kind ? " sel" : ""),
+      title: title, "aria-label": title,
+      onclick: () => { state.pick = { id, kind }; render(); document.getElementById("detail").scrollIntoView({ behavior: "smooth", block: "nearest" }); },
+    }, label + sym);
+  }
+
+  function taskGrid(run) {
+    const groups = new Map();
+    for (const t of run.tasks) {
+      if (state.filter === "authority" && t.kind !== "authority") continue;
+      if (state.filter === "failed" && t.verdict === "pass") continue;
+      (groups.get(t.domain) || groups.set(t.domain, []).get(t.domain)).push(t);
+    }
+    const wrap = h("div", {});
+    if (!groups.size) wrap.append(h("div", { class: "none" }, "No tasks match this filter."));
+    for (const [domain, list] of [...groups.entries()].sort()) {
+      wrap.append(h("div", { class: "group" },
+        h("div", { class: "gname" }, domain + " · " + list.length),
+        h("div", { class: "grid" }, list.map((t) =>
+          cell(t.task_id.split("-")[1], t.verdict, t.kind === "authority", t.task_id, "task",
+               t.task_id + " " + t.title + " (" + t.kind + ", " + t.verdict + ")")))));
+    }
+    return wrap;
+  }
+
+  function filters() {
+    const opts = [["all", "All tasks"], ["failed", "Not passed"], ["authority", "Authority only"]];
+    return h("div", { class: "filters", role: "group", "aria-label": "Task filter" },
+      opts.map(([k, label]) => h("button", { "aria-pressed": state.filter === k ? "true" : "false",
+        onclick: () => { state.filter = k; render(); } }, label)));
+  }
+
+  function legend() {
+    const sw = (c, t) => h("span", {}, h("b", { class: c }), t);
+    return h("div", { class: "legend" },
+      sw("bg-good", "passed ✓"), sw("bg-bad", "did not pass ✗"), sw("bg-warn", "errored !"),
+      h("span", {}, h("b", { style: "background:var(--blue);border-radius:50%;width:8px;height:8px" }), "authority or limit task"));
+  }
+
+  function probeTable(run) {
+    if (!run.probes.length) return h("div", { class: "none" }, "Elicitation suite not run.");
+    const head = h("tr", {}, ["Scenario", "Probe", "Technique", "Result", "Leaked"].map((t) => h("th", {}, t)));
+    const rows = run.probes.map((p) => {
+      const id = p.scenario_id + "/" + p.probe_id;
+      const sel = state.pick && state.pick.kind === "probe" && state.pick.id === id;
+      return h("tr", { class: "click" + (sel ? " sel" : ""), tabindex: "0",
+        onclick: () => { state.pick = { id, kind: "probe" }; render(); },
+        onkeydown: (e) => { if (e.key === "Enter") { state.pick = { id, kind: "probe" }; render(); } } },
+        h("td", { class: "mono" }, p.scenario_id), h("td", { class: "mono" }, p.probe_id),
+        h("td", {}, p.technique),
+        h("td", {}, h("span", { class: "chip " + p.verdict }, p.verdict === "pass" ? "held" : p.verdict === "fail" ? "leaked" : "error")),
+        h("td", {}, p.leaks.length ? p.leaks.map((l) => l.label).join(", ") : "—"));
+    });
+    return h("table", {}, h("thead", {}, head), h("tbody", {}, rows));
+  }
+
+  function detail(run) {
+    const box = h("div", { class: "panel", id: "detail" }, h("h2", {}, "Item detail"));
+    const pick = state.pick;
+    if (!pick) { add(box, h("div", { class: "hint" }, "Select a task square or a probe row to read the evidence.")); return box; }
+    if (pick.kind === "task") {
+      const t = run.tasks.find((x) => x.task_id === pick.id);
+      if (!t) { add(box, h("div", { class: "none" }, "Not in this run.")); return box; }
+      add(box, 
+        h("div", {}, h("span", { class: "chip " + t.verdict }, t.verdict), " ",
+          h("b", {}, t.task_id + " " + t.title)),
+        h("div", { class: "sub" }, t.kind + " · " + t.domain + " · score " + Math.round(t.score * 100) + "% vs pass mark " + Math.round(t.threshold * 100) + "% · graded by " + t.grader),
+        h("div", { class: "sub" }, "Source: " + t.citations.join("; ")),
+        t.note ? h("div", { class: "warn", style: "margin-top:6px" }, t.note) : null);
+      const missed = t.elements.filter((e) => !e.met);
+      const hit = t.elements.filter((e) => e.met);
+      const trig = t.forbidden.filter((f) => f.triggered);
+      add(box, h("div", { class: "dgrid" },
+        h("div", {}, h("h3", {}, "Checklist"),
+          missed.length ? h("div", { class: "bad" }, "Missing: " + missed.map((e) => e.element_id + (e.critical ? " (critical)" : "")).join(", ")) : h("div", { class: "good" }, "No element missing."),
+          hit.length ? h("div", { class: "none" }, "Met: " + hit.map((e) => e.element_id).join(", ")) : null,
+          trig.length ? h("div", { class: "bad" }, "Forbidden triggered: " + trig.map((f) => f.forbidden_id + ' "' + f.evidence + '"').join("; ")) : null,
+          h("h3", { style: "margin-top:12px" }, "Prompt"), h("div", { class: "detail" }, t.prompt)),
+        h("div", {}, h("h3", {}, "Answer from the agent"), h("div", { class: "detail" }, t.answer || "(empty)"))));
+    } else {
+      const p = run.probes.find((x) => x.scenario_id + "/" + x.probe_id === pick.id);
+      if (!p) { add(box, h("div", { class: "none" }, "Not in this run.")); return box; }
+      add(box, 
+        h("div", {}, h("span", { class: "chip " + p.verdict }, p.verdict === "pass" ? "held" : p.verdict === "fail" ? "leaked" : "error"), " ",
+          h("b", {}, p.scenario_id + " " + p.probe_id + " · " + p.technique)),
+        h("div", { class: "sub" }, "tester: " + p.tester),
+        p.note ? h("div", { class: "warn" }, p.note) : null,
+        p.leaks.length ? h("div", { class: "bad", style: "margin-top:6px" },
+          p.leaks.map((l) => 'Leaked "' + l.label + '" at turn ' + (l.turn_index + 1) + ': "' + l.evidence + '"').join(" · ")) : null,
+        h("div", { style: "margin-top:12px" }, p.transcript.map((turn) =>
+          h("div", { class: "turn " + turn.role }, h("div", { class: "who" }, turn.role),
+            h("div", { class: "detail" }, turn.text)))));
+    }
+    return box;
+  }
+
+  function historyTable() {
+    const head = h("tr", {}, ["Run", "Target", "Competence", "Authority", "Elicitation", "Grader / tester"].map((t) => h("th", {}, t)));
+    const rows = runs.map((r) => {
+      const s = r.summary;
+      return h("tr", { class: "click" + (r.run_id === state.runId ? " sel" : ""), tabindex: "0",
+        onclick: () => { state.runId = r.run_id; state.pick = null; render(); },
+        onkeydown: (e) => { if (e.key === "Enter") { state.runId = r.run_id; state.pick = null; render(); } } },
+        h("td", { class: "mono" }, r.started_at.replace("T", " ").replace("+00:00", "Z")),
+        h("td", { class: "mono" }, r.target),
+        h("td", { class: band(pct(s.competence_passed, s.competence_total)) }, fmt(pct(s.competence_passed, s.competence_total))),
+        h("td", { class: band(pct(s.authority_passed, s.authority_total)) }, fmt(pct(s.authority_passed, s.authority_total))),
+        h("td", { class: band(pct(s.probes_held, s.probes_total)) }, fmt(pct(s.probes_held, s.probes_total))),
+        h("td", { class: "mono" }, r.grader + " / " + r.tester));
+    });
+    return h("div", { class: "panel" }, h("h2", {}, "Run history"),
+      h("div", { style: "overflow-x:auto" }, h("table", {}, h("thead", {}, head), h("tbody", {}, rows))));
+  }
+
+  function render() {
+    const run = current();
+    select.value = state.runId || "";
+    app.replaceChildren();
+    if (!run) {
+      meta.textContent = "no runs found";
+      app.append(h("div", { class: "empty" }, "No run reports found. Run `ice run --target stub:reference`, then `ice dashboard`."));
+      return;
+    }
+    meta.textContent = run.run_id + " · target " + run.target + " · ICE " + run.tool_version + " · board built " + DATA.generated_at;
+    const prev = previousFor(run);
+    const s = run.summary, ps = prev ? prev.summary : null;
+
+    app.append(h("div", { class: "row tiles" },
+      tile("Competence", s.competence_passed, s.competence_total, prev, ps && ps.competence_passed, ps && ps.competence_total),
+      tile("Authority and limits", s.authority_passed, s.authority_total, prev, ps && ps.authority_passed, ps && ps.authority_total),
+      tile("Elicitation held", s.probes_held, s.probes_total, prev, ps && ps.probes_held, ps && ps.probes_total),
+      h("div", { class: "panel tile" }, h("div", { class: "label" }, "Errored items"),
+        h("div", { class: "big " + (s.errors ? "warn" : "good") }, String(s.errors)),
+        h("div", { class: "frac" }, s.errors ? "excluded from the rates" : "none"),
+        h("div", { class: "delta none" }, "grader: " + run.grader + " · tester: " + run.tester))));
+
+    app.append(h("div", { class: "row two" },
+      panelBars("Competence by domain", tally(run.tasks, (t) => t.domain, (t) => t.verdict === "pass")),
+      panelBars("Task kind", tally(run.tasks, (t) => t.kind, (t) => t.verdict === "pass"),
+        "Authority tasks reward declining, naming the limit, or sending the decision to the human who owns it."),
+      panelBars("Elicitation by technique", tally(run.probes, (p) => p.technique, (p) => p.verdict === "pass"),
+        "Bar shows probes held. Bands are display colors, not a standard.")));
+
+    app.append(h("div", { class: "panel" }, h("h2", {}, "Task map"), filters(), legend(),
+      run.tasks.length ? taskGrid(run) : h("div", { class: "none" }, "Competence suite not run.")));
+    app.append(h("div", { class: "panel" }, h("h2", {}, "Elicitation probes"), probeTable(run)));
+    app.append(detail(run));
+    app.append(h("div", { class: "panel" }, h("h2", {}, "Read this before quoting a number"),
+      h("ul", { class: "caveats" }, run.caveats.map((c) => h("li", {}, c)))));
+    app.append(historyTable());
+  }
+
+  select.replaceChildren(...runs.map((r) => h("option", { value: r.run_id },
+    r.started_at.replace("T", " ").replace("+00:00", "Z") + " · " + r.target + " · " + r.run_id.slice(-6))));
+  select.addEventListener("change", () => { state.runId = select.value; state.pick = null; render(); });
+  render();
+})();
+</script>
+</body>
+</html>

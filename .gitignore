@@ -1,0 +1,22 @@
+.venv/
+__pycache__/
+*.pyc
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+
+# Run output can hold transcripts from a real agent. Keep it out of git.
+runs/
+staging/
+
+# Secrets never go in the repo.
+.env
+.env.*
+!.env.example
+
+# Source manuals are not redistributed from this repo.
+*.pdf
+*.PDF

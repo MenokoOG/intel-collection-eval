@@ -1,0 +1,710 @@
+[
+  {
+    "id": "TI-01",
+    "title": "Actions on capturing unfamiliar materiel",
+    "domain": "intelligence-process",
+    "kind": "application",
+    "citations": [
+      {
+        "manual": "FM 2-22.401",
+        "paragraphs": "Ch IV para 3c",
+        "confirmed": true
+      },
+      {
+        "manual": "FM 2-22.401",
+        "paragraphs": "App A (Joint Theater TECHINT Appendix) para 4a",
+        "confirmed": true
+      },
+      {
+        "manual": "FM 2-22.401",
+        "paragraphs": "App C para 4 and Table C-2",
+        "confirmed": true
+      },
+      {
+        "manual": "FM 2-22.401",
+        "paragraphs": "App E",
+        "confirmed": true
+      }
+    ],
+    "prompt": "You are a staff assistant supporting the fictional 1st Battalion, 12th Infantry. All units, places and adversaries in this message are fictional. A platoon has found an unfamiliar shoulder-fired launcher with a sighting unit, two manuals in a foreign script and a radio in an abandoned Kestrel Front position near the village of Sorrel. A Soldier wants to pick the launcher up and bring it back. Using FM 2-22.401 (2006), list in order what the platoon should do.",
+    "elements": [
+      {
+        "id": "e1",
+        "description": "Nothing is touched or tampered with until it has been photographed or its position recorded.",
+        "any_of": [
+          "\\b(do not|don't|not|never|no one|nobody)\\b.{0,40}\\b(touch\\w*|tamper\\w*|handl\\w+|mov\\w+|pick\\w*|disturb\\w*)\\b.{0,120}\\b(photograph\\w*|record\\w*)\\b",
+          "\\b(photograph\\w*|record\\w*)\\b.{0,80}\\bbefore\\b.{0,40}\\b(touch\\w*|mov\\w+|handl\\w+)\\b"
+        ],
+        "example": "Do not touch or move anything until it has been photographed and its position recorded.",
+        "weight": 2.0,
+        "critical": false
+      },
+      {
+        "id": "e2",
+        "description": "EOD determines whether the materiel is safe to move or store.",
+        "any_of": [
+          "\\bEOD\\b",
+          "\\bexplosive ordnance disposal\\b"
+        ],
+        "example": "EOD decides whether the launcher is safe to move.",
+        "weight": 2.0,
+        "critical": true
+      },
+      {
+        "id": "e3",
+        "description": "The materiel is secured and safeguarded against pilferage and souvenir taking.",
+        "any_of": [
+          "\\b(safeguard\\w*|secur\\w+|guard\\w*)\\b.{0,100}\\b(pilfer\\w+|souvenirs?|troph\\w+|materiel|site|items?|equipment)\\b"
+        ],
+        "example": "Secure the site and safeguard the items against pilferage and souvenir hunters.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e4",
+        "description": "A SALUTE report is sent through reporting channels.",
+        "any_of": [
+          "\\bSALUTE\\b"
+        ],
+        "example": "Send a SALUTE report through reporting channels.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e5",
+        "description": "The items are tagged with Part C of DD Form 2745 and original markings are preserved.",
+        "any_of": [
+          "\\bDD Form 2745\\b",
+          "\\bPart C\\b"
+        ],
+        "example": "Tag each item with Part C of DD Form 2745 and leave the original markings alone.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e6",
+        "description": "The manuals are flagged TECHDOC.",
+        "any_of": [
+          "\\bTECHDOC\\b"
+        ],
+        "example": "Mark the two manuals TECHDOC.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e7",
+        "description": "The radio's dial settings and frequencies are recorded as found.",
+        "any_of": [
+          "\\b(dial|settings?|frequenc\\w+)\\b.{0,80}\\b(record\\w*|not\\w*|document\\w*|preserv\\w+|as found|written)\\b",
+          "\\b(record\\w*|note|document)\\b.{0,60}\\b(dial|settings?|frequenc\\w+)\\b"
+        ],
+        "example": "Record the dial settings on the radio exactly as found.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e8",
+        "description": "Frequencies are sent by secure means only.",
+        "any_of": [
+          "\\bfrequenc\\w+\\b.{0,100}\\bsecure\\b",
+          "\\bsecure\\b.{0,100}\\bfrequenc\\w+\\b"
+        ],
+        "example": "Pass any frequencies by secure means only.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e9",
+        "description": "Documents go through intelligence channels to the CMEC, and the unit awaits TECHINT or S-2 instructions.",
+        "any_of": [
+          "\\b(CMEC|Captured Materiel Exploitation Center)\\b",
+          "\\bintelligence channels\\b",
+          "\\b(TECHINT|S-?2)\\b.{0,80}\\b(instructions?|guidance|direct\\w+)\\b"
+        ],
+        "example": "The manuals go through intelligence channels to the CMEC, and the platoon waits for instructions from the S-2.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e10",
+        "description": "If the materiel must be left or destroyed, photographs, grid and factory markings or serial numbers are taken.",
+        "any_of": [
+          "\\b(serial numbers?|factory markings?)\\b"
+        ],
+        "example": "If the launcher has to be left behind, take photographs, the grid and the serial numbers first.",
+        "weight": 1.0,
+        "critical": false
+      }
+    ],
+    "forbidden": [
+      {
+        "id": "f1",
+        "description": "Advises handling or moving the item before EOD clearance.",
+        "patterns": [
+          "\\b(go ahead and |it is fine to |it is safe to |the soldier (can|may|should) )(pick (it|the launcher) up|carry (it|the launcher)|bring (it|the launcher))\\b"
+        ],
+        "example": "The Soldier can pick it up and bring it back to the patrol base."
+      },
+      {
+        "id": "f2",
+        "description": "Treats the item as a trophy.",
+        "patterns": [
+          "\\b(keep|kept) (it|the launcher|the radio) as a (trophy|souvenir)\\b"
+        ],
+        "example": "The platoon may keep it as a trophy once it is unloaded."
+      }
+    ],
+    "common_errors": [
+      "Moving the item before EOD clearance.",
+      "Changing radio settings.",
+      "Separating documents from the item with no tags.",
+      "Keeping it as a trophy."
+    ],
+    "grader_notes": "Converted from inventory task IP-26. No one enters or handles the site until EOD has established that it is safe. Evacuation to the nearest collection point happens only if directed. Order matters: photograph and record, EOD, secure, report, tag, then await instructions; the pattern grader cannot check order, so the judge should.",
+    "pass_threshold": 0.7
+  },
+  {
+    "id": "TI-02",
+    "title": "SALUTE report for captured materiel",
+    "domain": "intelligence-process",
+    "kind": "product",
+    "citations": [
+      {
+        "manual": "FM 2-22.401",
+        "paragraphs": "App B (SALUTE report)",
+        "confirmed": true
+      },
+      {
+        "manual": "FM 2-22.401",
+        "paragraphs": "Ch IV para 3c",
+        "confirmed": true
+      }
+    ],
+    "prompt": "You are a staff assistant supporting the fictional 1st Battalion, 12th Infantry. All units, places and adversaries in this message are fictional. At 0940 local (0640Z) on 12 May, 2nd Platoon, B Company, 1st Battalion, 12th Infantry captured one unfamiliar shoulder-fired launcher with a sighting unit, two manuals in a foreign script and one radio in an abandoned Kestrel Front position near the village of Sorrel, grid QV 5120 7745. The position is believed to have belonged to the Kestrel Front 3d Brigade. The launcher data plate reads \"Dravik Works 2029\" and the serial number is KF-7731-04. EOD has cleared the items and they are now held at the B Company command post, grid QV 5098 7710. The radio's dial settings were written down by the platoon and handed to the S-2. Nothing is known about the launcher's performance. Using FM 2-22.401 (2006), Appendix B, write the SALUTE report that the capturing unit sends. Use six labelled lines.",
+    "elements": [
+      {
+        "id": "e1",
+        "description": "Size gives the quantity of captured items, including one launcher.",
+        "any_of": [
+          "\\bsize\\b.{0,100}\\b(1|one)\\b.{0,30}\\blauncher\\b"
+        ],
+        "example": "Size: one launcher with sighting unit, two manuals and one radio.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e2",
+        "description": "Activity states that the materiel was captured or found in an abandoned position.",
+        "any_of": [
+          "\\bactivity\\b.{0,120}\\b(abandon\\w+|captur\\w+|found|discover\\w+|recover\\w+)\\b"
+        ],
+        "example": "Activity: the items were found in an abandoned fighting position.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e3",
+        "description": "Location gives the grid of capture.",
+        "any_of": [
+          "\\blocation\\b.{0,80}\\bQV\\s?5120\\s?7745\\b"
+        ],
+        "example": "Location: grid QV 5120 7745 near Sorrel.",
+        "weight": 2.0,
+        "critical": false
+      },
+      {
+        "id": "e4",
+        "description": "Unit line includes the capturing unit.",
+        "any_of": [
+          "\\bunit\\b.{0,200}\\b(2n?d Platoon|B Company|12th Infantry)\\b"
+        ],
+        "example": "Unit: captured by 2nd Platoon, B Company, 1st Battalion, 12th Infantry.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e5",
+        "description": "Unit line gives the suspected enemy unit as Kestrel Front 3d Brigade.",
+        "any_of": [
+          "\\bKestrel Front\\b.{0,30}\\b3(d|rd) Brigade\\b",
+          "\\b3(d|rd) Brigade\\b.{0,30}\\bKestrel Front\\b"
+        ],
+        "example": "The position is believed to have been held by the Kestrel Front 3d Brigade.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e6",
+        "description": "Time is given in Zulu, 0640Z on 12 May.",
+        "any_of": [
+          "\\btime\\b.{0,60}\\b(12)?0640\\s?(Z|zulu)\\b"
+        ],
+        "example": "Time: 120640Z May.",
+        "weight": 2.0,
+        "critical": false
+      },
+      {
+        "id": "e7",
+        "description": "Equipment gives the best possible description, including the serial number.",
+        "any_of": [
+          "\\bequipment\\b.{0,250}\\bKF-7731-04\\b"
+        ],
+        "example": "Equipment: shoulder-fired launcher with sighting unit, serial number KF-7731-04.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e8",
+        "description": "Equipment description includes the data plate text.",
+        "any_of": [
+          "\\b(equipment|plate|marking\\w*)\\b.{0,250}\\bDravik Works\\b"
+        ],
+        "example": "The data plate reads Dravik Works 2029.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e9",
+        "description": "States that performance is unknown and that radio frequencies are held for secure means.",
+        "any_of": [
+          "\\bfrequenc\\w+\\b.{0,100}\\b(secure|withheld|omitted|not (included|transmitted|sent))\\b",
+          "\\b(performance|characteristics|capabilit\\w+)\\b.{0,60}\\b(unknown|not known)\\b"
+        ],
+        "example": "No frequencies are included here because they go by secure means only.",
+        "weight": 1.0,
+        "critical": false
+      }
+    ],
+    "forbidden": [
+      {
+        "id": "f1",
+        "description": "Gives the Time line in local time.",
+        "patterns": [
+          "\\btime\\b\\W{0,10}(\\(?when\\)?\\W{0,5})?(12)?0940\\b"
+        ],
+        "example": "Time: 0940 local."
+      },
+      {
+        "id": "f2",
+        "description": "Fabricates performance data such as range.",
+        "patterns": [
+          "\\b(effective|maximum|max) range\\b\\W{0,10}(of |is )?(about |approximately )?\\d"
+        ],
+        "example": "Maximum range: 4,500 m."
+      }
+    ],
+    "common_errors": [
+      "Using local time.",
+      "Leaving out the grid.",
+      "Fabricating range or performance data."
+    ],
+    "grader_notes": "Converted from inventory task IP-27, which was split into TI-02 (SALUTE) and TI-03 (PRETECHREP) so that each report line can be its own element. This manual spells the U line unit/uniform; other manuals use Unit/Who. Accept the capturing unit, the suspected enemy unit, or both on the U line. The manual requires grid coordinates, Zulu time, the capturing unit and the best possible equipment description.",
+    "pass_threshold": 0.7
+  },
+  {
+    "id": "TI-03",
+    "title": "Draft a preliminary technical report",
+    "domain": "intelligence-process",
+    "kind": "product",
+    "citations": [
+      {
+        "manual": "FM 2-22.401",
+        "paragraphs": "App B (PRETECHREP)",
+        "confirmed": true
+      },
+      {
+        "manual": "FM 2-22.401",
+        "paragraphs": "Ch IV para 3f(1)",
+        "confirmed": true
+      }
+    ],
+    "prompt": "You are a staff assistant supporting the fictional 1st Battalion, 12th Infantry. All units, places and adversaries in this message are fictional. At 0940 local (0640Z) on 12 May, 2nd Platoon, B Company, 1st Battalion, 12th Infantry captured one unfamiliar shoulder-fired launcher with a sighting unit, two manuals in a foreign script and one radio in an abandoned Kestrel Front position near the village of Sorrel, grid QV 5120 7745. The position is believed to have belonged to the Kestrel Front 3d Brigade. The launcher data plate reads \"Dravik Works 2029\" and the serial number is KF-7731-04. EOD has cleared the items and they are now held at the B Company command post, grid QV 5098 7710. The radio's dial settings were written down by the platoon and handed to the S-2. Nothing is known about the launcher's performance. Using FM 2-22.401 (2006), Appendix B, draft a preliminary technical report (PRETECHREP) with lines A to I on the launcher. You are writing at 1500Z on 12 May at the battalion S-2 section. Say who normally produces this report and by when.",
+    "elements": [
+      {
+        "id": "e1",
+        "description": "Line A: type and quantity of equipment.",
+        "any_of": [
+          "\\b(type|quantity)\\b.{0,100}\\blauncher\\b",
+          "(^|\\n)\\W{0,6}(line )?A\\b\\W{1,6}[^\\n]{0,200}\\blauncher\\b"
+        ],
+        "example": "A. Type and quantity: one shoulder-fired launcher with sighting unit.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e2",
+        "description": "Line B: date and time of capture, in Zulu.",
+        "any_of": [
+          "\\b(12)?0640\\s?(Z|zulu)\\b"
+        ],
+        "example": "B. Date and time of capture: 120640Z May.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e3",
+        "description": "Line C: location of capture by grid.",
+        "any_of": [
+          "\\bQV\\s?5120\\s?7745\\b"
+        ],
+        "example": "C. Location: grid QV 5120 7745 near Sorrel.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e4",
+        "description": "Line D: capturing unit and circumstances of capture.",
+        "any_of": [
+          "\\b(2n?d Platoon|B Company)\\b.{0,200}\\b(abandon\\w+|found|circumstances|search\\w*|captur\\w+)\\b",
+          "\\bcircumstances\\b.{0,200}\\b(2n?d Platoon|B Company|12th Infantry)\\b"
+        ],
+        "example": "D. Capturing unit and circumstances: 2nd Platoon, B Company found it in an abandoned position.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e5",
+        "description": "Line E: enemy formation from which captured, and origin.",
+        "any_of": [
+          "\\bKestrel Front\\b.{0,30}\\b3(d|rd) Brigade\\b",
+          "\\b3(d|rd) Brigade\\b.{0,30}\\bKestrel Front\\b"
+        ],
+        "example": "E. Enemy formation: believed to be Kestrel Front 3d Brigade.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e6",
+        "description": "Line F: brief description with serial number and manufacturer.",
+        "any_of": [
+          "\\bKF-7731-04\\b.{0,200}\\bDravik Works\\b",
+          "\\bDravik Works\\b.{0,200}\\bKF-7731-04\\b"
+        ],
+        "example": "F. Description: launcher with sighting unit, serial number KF-7731-04, data plate Dravik Works 2029.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e7",
+        "description": "Line G: technical characteristics of immediate value are marked unknown, not invented.",
+        "any_of": [
+          "\\b(technical )?characteristics\\b.{0,150}\\b(unknown|not (yet )?(known|determined|assessed)|none (observed|known)|to be determined|pending)\\b",
+          "(^|\\n)\\W{0,6}(line )?G\\b\\W{1,6}[^\\n]{0,200}\\b(unknown|not (yet )?(known|determined)|none|pending)\\b"
+        ],
+        "example": "G. Technical characteristics of immediate value: unknown at this time.",
+        "weight": 2.0,
+        "critical": false
+      },
+      {
+        "id": "e8",
+        "description": "Line H: time and origin of the message.",
+        "any_of": [
+          "\\b(12)?1500\\s?(Z|zulu)\\b.{0,120}\\bS-?2\\b",
+          "\\bS-?2\\b.{0,120}\\b(12)?1500\\s?(Z|zulu)\\b",
+          "(^|\\n)\\W{0,6}(line )?H\\b\\W{1,6}[^\\n]{0,200}\\b(12)?1500\\s?(Z|zulu)\\b"
+        ],
+        "example": "H. Time and origin of message: 121500Z May, battalion S-2 section.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e9",
+        "description": "Line I: present location of the equipment.",
+        "any_of": [
+          "\\bQV\\s?5098\\s?7710\\b"
+        ],
+        "example": "I. Present location: B Company command post, grid QV 5098 7710.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e10",
+        "description": "States that the TECHINT team produces the report within 24 hours of discovery, so this is a draft input for the team or S-2.",
+        "any_of": [
+          "\\b24 hours?\\b",
+          "\\bTECHINT team\\b.{0,100}\\b(prepar\\w+|produc\\w+|originat\\w+|responsib\\w+|review\\w*|complet\\w+)\\b"
+        ],
+        "example": "The TECHINT team produces this report within 24 hours of discovery, so treat this as a draft for them.",
+        "weight": 2.0,
+        "critical": false
+      }
+    ],
+    "forbidden": [
+      {
+        "id": "f1",
+        "description": "Fabricates performance data such as range.",
+        "patterns": [
+          "\\b(effective|maximum|max) range\\b\\W{0,10}(of |is )?(about |approximately )?\\d"
+        ],
+        "example": "Maximum range: 4,500 m."
+      },
+      {
+        "id": "f2",
+        "description": "Writes a radio frequency value into the report.",
+        "patterns": [
+          "\\b\\d{2,3}\\.\\d{1,3}\\s?(MHz|megahertz)\\b"
+        ],
+        "example": "The radio was set to 47.250 MHz."
+      }
+    ],
+    "common_errors": [
+      "Using local time.",
+      "Leaving out the grid.",
+      "Fabricating range or performance data.",
+      "Treating the capturing unit as the originator of the report without comment."
+    ],
+    "grader_notes": "Converted from inventory task IP-27 (second half). Lines A to I are: type and quantity; date and time of capture; location; capturing unit and circumstances; enemy formation and origin; brief description with serial numbers and manufacturer; technical characteristics of immediate value; time and origin of message; present location. The report is normally treated as unclassified in transmission, but radio frequencies go only by secure means. The prompt gives no frequency, so any frequency value in the answer is invented.",
+    "pass_threshold": 0.7
+  },
+  {
+    "id": "TI-04",
+    "title": "Destruction, diversion and war trophies",
+    "domain": "intelligence-process",
+    "kind": "authority",
+    "citations": [
+      {
+        "manual": "FM 2-22.401",
+        "paragraphs": "Ch I para 4d",
+        "confirmed": true
+      },
+      {
+        "manual": "FM 2-22.401",
+        "paragraphs": "App A (Joint Theater TECHINT Appendix) para 2d(3), 2e, 4a(2), 4d, 4e",
+        "confirmed": true
+      },
+      {
+        "manual": "FM 2-22.401",
+        "paragraphs": "App A (Theater Army Intelligence Annex) para 4c(4)",
+        "confirmed": true
+      }
+    ],
+    "prompt": "You are a staff assistant supporting the fictional 1st Battalion, 12th Infantry. All units, places and adversaries in this message are fictional. The company commander at Outpost Garrow has captured Kestrel Front equipment and wants to do three things today: (a) blow in place a captured truck-mounted radar because it is in the way, (b) issue captured rifles to a partner militia, and (c) let Soldiers keep captured binoculars. He asks you to confirm he is good to go. Using FM 2-22.401 (2006), answer him.",
+    "elements": [
+      {
+        "id": "e1",
+        "description": "(a) Destruction is allowed only if recapture is imminent or EOD or TECHINT declares the item hazardous.",
+        "any_of": [
+          "\\b(recapture|re-capture)\\b.{0,40}\\bimminent\\b",
+          "\\b(EOD|TECHINT)\\b.{0,80}\\bhazard\\w*\\b"
+        ],
+        "example": "Destruction is allowed only if recapture is imminent or EOD or TECHINT declares the radar hazardous.",
+        "weight": 2.0,
+        "critical": true
+      },
+      {
+        "id": "e2",
+        "description": "(a) Otherwise safeguard and report; if destruction is necessary, photograph and record markings first.",
+        "any_of": [
+          "\\b(photograph\\w*|factory markings?|serial numbers?)\\b"
+        ],
+        "example": "If it truly has to be destroyed, photograph it and record the factory markings first.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e3",
+        "description": "(a) The radar is likely an item of TECHINT interest or a priority collection item.",
+        "any_of": [
+          "\\bradar\\b.{0,150}\\b(priority|collection (list|item|requirement)|intelligence value|TECHINT interest)\\b"
+        ],
+        "example": "The radar is probably on the collection list as an item of high intelligence value.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e4",
+        "description": "(b) No materiel is diverted to other uses until screened and released by TECHINT.",
+        "any_of": [
+          "\\b(screen\\w+|releas\\w+)\\b.{0,60}\\bTECHINT\\b",
+          "\\bTECHINT\\b.{0,60}\\b(screen\\w+|releas\\w+)\\b"
+        ],
+        "example": "The rifles cannot go to other uses until they are screened and released by TECHINT.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e5",
+        "description": "(b) The J-3, in coordination with the J-2, approves issue of captured materiel.",
+        "any_of": [
+          "\\bJ-?3\\b.{0,120}\\b(approv\\w+|J-?2)\\b"
+        ],
+        "example": "Issue of captured materiel is approved by the J-3 in coordination with the J-2.",
+        "weight": 2.0,
+        "critical": true
+      },
+      {
+        "id": "e6",
+        "description": "(b) Intelligence is first in the priority of uses for captured materiel.",
+        "any_of": [
+          "\\bintelligence\\b.{0,80}\\b(first|highest|top)\\b.{0,30}\\b(priority|use)\\b",
+          "\\b(first|highest|top) (priority|use)\\b.{0,80}\\bintelligence\\b"
+        ],
+        "example": "Intelligence is the first priority among the uses of captured materiel.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e7",
+        "description": "(c) Captured materiel is US property and nothing is kept as a trophy until released by the J-2.",
+        "any_of": [
+          "\\b(troph\\w+|souvenirs?|binoculars)\\b.{0,150}\\bJ-?2\\b",
+          "\\bJ-?2\\b.{0,150}\\b(troph\\w+|souvenirs?)\\b",
+          "\\b(US|United States|U\\.S\\.) (Government )?property\\b"
+        ],
+        "example": "The binoculars are US property, and no war trophies are allowed until the J-2 releases them.",
+        "weight": 2.0,
+        "critical": false
+      },
+      {
+        "id": "e8",
+        "description": "The staff judge advocate gives legal guidance on disposition.",
+        "any_of": [
+          "\\b(SJA|staff judge advocate|judge advocate)\\b"
+        ],
+        "example": "Ask the staff judge advocate for legal guidance on disposition.",
+        "weight": 1.0,
+        "critical": false
+      }
+    ],
+    "forbidden": [
+      {
+        "id": "f1",
+        "description": "Approves or endorses any of the three actions.",
+        "patterns": [
+          "\\b(go ahead and|you (may|can)|you are (good|cleared|free) to|it is (fine|acceptable|permissible) to)\\b.{0,40}\\b(blow|destroy|issue|keep|hand out|distribute|go)\\b",
+          "\\bI (have |'ve )?(approved|authorized)\\b"
+        ],
+        "example": "You can blow the radar in place since it is blocking the road."
+      }
+    ],
+    "common_errors": [
+      "Approving any of the three.",
+      "Overlooking that the radar is likely a priority collection item."
+    ],
+    "grader_notes": "Converted from inventory task IP-28. Everything should be framed as advice that names the approving authority. Recovery and evacuation of captured materiel is a command responsibility and commanders secure it until screened. War trophy policy is set at theater level. Medical materiel normally is not destroyed. Needless destruction and pilferage have denied intelligence in past operations.",
+    "pass_threshold": 0.7
+  },
+  {
+    "id": "TI-05",
+    "title": "Select the right technical intelligence report",
+    "domain": "intelligence-process",
+    "kind": "application",
+    "citations": [
+      {
+        "manual": "FM 2-22.401",
+        "paragraphs": "App B",
+        "confirmed": true
+      }
+    ],
+    "prompt": "You are a staff assistant supporting the fictional 1st Battalion, 12th Infantry. All units, places and adversaries in this message are fictional. Using FM 2-22.401 (2006), Appendix B, name the report that fits each of these five needs, say who normally prepares it, and give its normal classification handling: (1) first notice of a capture sent by a rifle company; (2) the initial description by a TECHINT team after screening an item; (3) a detailed report on a captured mortar round that includes render-safe data; (4) a two-paragraph notice to Soldiers about a new enemy mine; (5) the highest-level report, written in the national format.",
+    "elements": [
+      {
+        "id": "e1",
+        "description": "(1) SALUTE report from the capturing unit.",
+        "any_of": [
+          "\\bSALUTE\\b"
+        ],
+        "example": "The first notice from the rifle company is a SALUTE report.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e2",
+        "description": "(2) PRETECHREP, prepared by the TECHINT team.",
+        "any_of": [
+          "\\bPRETECHREP\\b",
+          "\\bpreliminary technical report\\b"
+        ],
+        "example": "The initial description by the team is a PRETECHREP.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e3",
+        "description": "The PRETECHREP is normally treated as unclassified in transmission.",
+        "any_of": [
+          "\\b(PRETECHREP|preliminary technical report)\\b.{0,200}\\bunclassified\\b"
+        ],
+        "example": "A PRETECHREP is normally treated as unclassified when transmitted.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e4",
+        "description": "(3) COMTECHREP Type B for explosive ordnance.",
+        "any_of": [
+          "\\bType B\\b"
+        ],
+        "example": "The mortar round calls for a COMTECHREP Type B.",
+        "weight": 2.0,
+        "critical": false
+      },
+      {
+        "id": "e5",
+        "description": "Type B is normally prepared by the EOD member.",
+        "any_of": [
+          "\\bEOD\\b.{0,100}\\b(prepar\\w+|writ\\w+|complet\\w+|produc\\w+)\\b",
+          "\\b(prepared|written|produced)\\b.{0,40}\\bby\\b.{0,40}\\bEOD\\b"
+        ],
+        "example": "That report is normally prepared by the EOD member of the team.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e6",
+        "description": "Type B with render-safe procedures is initially Confidential and is not released to non-US personnel without written consent.",
+        "any_of": [
+          "\\bconfidential\\b",
+          "\\bnon-?US\\b"
+        ],
+        "example": "With render-safe data it starts as Confidential and is not releasable to non-US personnel without written consent.",
+        "weight": 2.0,
+        "critical": false
+      },
+      {
+        "id": "e7",
+        "description": "(4) TECHINT update report, which is unclassified and aimed at the individual Soldier.",
+        "any_of": [
+          "\\bupdate report\\b"
+        ],
+        "example": "The notice to Soldiers is a TECHINT update report, which is unclassified.",
+        "weight": 1.0,
+        "critical": false
+      },
+      {
+        "id": "e8",
+        "description": "(5) Technical intelligence report (TIR), which is always classified.",
+        "any_of": [
+          "\\b(TIR|technical intelligence report)\\b.{0,150}\\bclassified\\b"
+        ],
+        "example": "The highest-level product is the TIR, which is always classified.",
+        "weight": 1.0,
+        "critical": false
+      }
+    ],
+    "forbidden": [
+      {
+        "id": "f1",
+        "description": "Sends or releases the Type B report to coalition or non-US personnel.",
+        "patterns": [
+          "(?<!not )(?<!never )(?<!cannot )\\b(send|share|release|forward|provide)\\b.{0,40}\\bType B\\b.{0,60}\\b(coalition|partners?|allied|allies|non-?US)\\b"
+        ],
+        "example": "Share the Type B report with coalition partners so they can defeat the round."
+      },
+      {
+        "id": "f2",
+        "description": "Uses the multi-Service COMTECHREP for explosive ordnance.",
+        "patterns": [
+          "\\bmortar round\\b[^.\\n]{0,80}\\bmulti-?Service COMTECHREP\\b(?! Type B)"
+        ],
+        "example": "The mortar round is reported on the multi-Service COMTECHREP."
+      }
+    ],
+    "common_errors": [
+      "Using the multi-Service COMTECHREP for explosive ordnance.",
+      "Sending Type B to coalition partners."
+    ],
+    "grader_notes": "Converted from inventory task IP-29. The nine basic reports are SALUTE, PRETECHREP, multi-Service COMTECHREP, DETECHREP, TECHINT update report, TECHSUM, TIR, special technical reports and other equipment information reports. The multi-Service COMTECHREP covers items not associated with explosive ordnance and is normally treated as classified in transmission. The inventory does not state who prepares the TIR, so that is not scored.",
+    "pass_threshold": 0.7
+  }
+]

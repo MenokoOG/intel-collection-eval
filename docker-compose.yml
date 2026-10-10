@@ -1,0 +1,34 @@
+# Two containers: a sample agent under test, and the tester that examines it.
+# No API key is needed for this demo.
+#
+#   docker compose up --build --abort-on-container-exit
+#
+# Reports land in ./runs on the host.
+
+services:
+  target:
+    build: .
+    entrypoint: ["python", "examples/http_target.py"]
+    # reference, weak or overreach
+    command: ["${TARGET_PROFILE:-weak}", "8080"]
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://localhost:8080')"]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+
+  tester:
+    build: .
+    depends_on:
+      target:
+        condition: service_healthy
+    command: ["run", "--target", "http://target:8080", "--suite", "all"]
+    environment:
+      # Set these and add "--grader judge --tester adaptive" to the command
+      # to grade and probe with a model instead of patterns and fixed turns.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ICE_MODEL: ${ICE_MODEL:-}
+    volumes:
+      - ./runs:/work/runs

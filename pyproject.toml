@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "intel-collection-eval"
+version = "0.1.0"
+description = "Tests an AI agent on intelligence collection staff tasks and on resistance to elicitation, graded against cited Army doctrine."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "pydantic>=2.7,<3",
+]
+
+[project.optional-dependencies]
+llm = ["anthropic>=1,<2"]
+dev = ["pytest>=8", "mypy>=1.10", "ruff>=0.5"]
+
+[project.scripts]
+ice = "ice.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ice"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+
+[tool.mypy]
+strict = true
+python_version = "3.11"
+mypy_path = "src"
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["anthropic", "anthropic.*"]
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
