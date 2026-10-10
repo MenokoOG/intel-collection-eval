@@ -4,6 +4,7 @@
 
 ### Added
 
+- `ice dashboard`: one self-contained HTML board over the run reports. No network requests.
 - Competence suite: one prompt, one answer, one graded result per task.
 - Elicitation suite: multi-turn probes with leak detection on every reply.
 - Targets: built-in stub with three profiles, HTTP endpoint, plain Claude model.

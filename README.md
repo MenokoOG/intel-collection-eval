@@ -79,6 +79,7 @@ Model grading can be wrong. Review failed and borderline items by hand.
 | `ice validate` | Check the bank and exit. |
 | `ice list` | List tasks, scenarios and sources. |
 | `ice run --target <t>` | Run suites against a target. |
+| `ice dashboard` | Build `runs/dashboard.html` from the run reports. Open it from disk. |
 
 Options for `run`:
 
